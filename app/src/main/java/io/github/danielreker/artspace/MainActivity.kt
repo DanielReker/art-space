@@ -32,7 +32,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -200,22 +203,24 @@ fun ArtworkDescription(artwork: Artwork, modifier: Modifier = Modifier) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = stringResource(artwork.name),
+                lineHeight = 36.sp,
                 fontSize = 32.sp,
             )
-            Row {
-                Text(
-                    text = stringResource(artwork.author),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = if (artwork.finishYear == null) "(${artwork.beginYear})"
-                    else "(${artwork.beginYear} - ${artwork.finishYear})",
-                    modifier = Modifier.padding(start = 4.dp),
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
-            }
+            Text (
+                fontSize = 16.sp,
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(stringResource(artwork.author))
+                    }
+                    append(" ")
+                    withStyle(style = SpanStyle(color = Color.Gray)) {
+                        append(
+                            if (artwork.finishYear == null) "(${artwork.beginYear})"
+                            else "(${artwork.beginYear}–${artwork.finishYear})"
+                        )
+                    }
+                }
+            )
         }
     }
 }
